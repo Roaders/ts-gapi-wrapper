@@ -1,6 +1,6 @@
 {
     "name": "ts-gapi-wrapper",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "An npm installable wrapper that loads and initialises gapi",
     "main": "dist/index.js",
     "types": "dist/index.js",
