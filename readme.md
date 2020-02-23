@@ -135,6 +135,7 @@ A demonstration app is available in the github repo to demonstrate usage:
 git clone https://github.com/Roaders/ts-gapi-wrapper.git
 cd ts-gapi-wrapper
 npm install
+npm run build
 cd example
 npm install
 npm start
