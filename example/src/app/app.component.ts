@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { empty } from 'rxjs';
+import { empty, from } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { GapiInitService, GapiLoginService, IGapiOptions } from 'ts-gapi-wrapper';
 
@@ -16,6 +16,8 @@ export class AppComponent {
     public API_KEY: string | undefined;
     public DISCOVERY_DOCS: string = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
     public SCOPES: string = 'https://www.googleapis.com/auth/drive.metadata.readonly';
+    public fileName: string | undefined;
+    public files: string | undefined;
 
     public initState = 'Not Initialised';
     public loginState = 'Not Subscribed';
@@ -70,8 +72,35 @@ export class AppComponent {
             () => this.zone.run(() => {
                 this.logoutResult = 'Logged Out';
                 this.loginResult = '';
+                this.files = '';
             }),
         );
+    }
+
+    public search() {
+
+        if (this.fileName == null) {
+            alert('please enter filename');
+            return;
+        }
+
+        const config = {
+            pageSize: 10,
+            fields: 'nextPageToken, files(id, name)',
+            q: `name contains \'${this.fileName}\'`,
+        };
+
+        this.initialiseStream().pipe(
+            mergeMap(() => this.loginService.login()),
+            mergeMap(() => from(gapi.client.load('drive', 'v3'))),
+            mergeMap(() => from(gapi.client.drive.files.list(config))),
+        ).subscribe((response) => {
+            this.zone.run(() => {
+                const files = response.result.files || [];
+                this.files = files.map((file) => file.name).join('\n');
+                this.logoutResult = '';
+            });
+        });
     }
 
     private initialiseStream() {

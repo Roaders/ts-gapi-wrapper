@@ -2,7 +2,8 @@
   "name": "example",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve --open"
+    "start": "ng serve --open",
+    "build": "ng build"
   },
   "private": true,
   "dependencies": {
@@ -15,6 +16,8 @@
     "@angular/platform-browser-dynamic": "~9.0.2",
     "@angular/router": "~9.0.2",
     "@types/gapi": "0.0.39",
+    "@types/gapi.auth2": "0.0.51",
+    "@types/gapi.client.drive": "^3.0.4",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -24,7 +27,6 @@
     "@angular/cli": "~9.0.3",
     "@angular/compiler-cli": "~9.0.2",
     "@angular/language-service": "~9.0.2",
-    "@types/gapi.auth2": "0.0.51",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",

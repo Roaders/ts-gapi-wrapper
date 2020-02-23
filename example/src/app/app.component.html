@@ -2,6 +2,13 @@
 <h1>GAPI Example</h1>
 
 <div>
+    <p>A valid CLIENT_ID and API_KEY must be provided. Create your own at <a target="_blank" href="https://console.developers.google.com">Google Developers Console</a>.</p>
+    <p>See <a href="https://developers.google.com/drive/api/v3/quickstart/js">Google Drive Quickstart</a> for more information.</p>
+    <p>Your client ID must have the correct origin to be used on this site.</p>
+    <p>This example uses the Drive api but ts-gapi-wrapper can be used with any Google api.</p>
+</div>
+
+<div>
 
     <div>CLIENT_ID</div>
     <input type="text" [(ngModel)]="CLIENT_ID">
@@ -42,5 +49,17 @@
 
     <button type="button" (click)="logout()">Logout</button>
     <span>{{logoutResult}}</span>
+
+</div>
+
+<div>
+    <h3>Search for Google Drive files</h3>
+
+    <input type="text" [(ngModel)]="fileName" placeholder="filename" >
+
+    <button type="button" (click)="search()">Search</button>
+    <div>
+        <textarea disabled>{{files}}</textarea>
+    </div>
 
 </div>

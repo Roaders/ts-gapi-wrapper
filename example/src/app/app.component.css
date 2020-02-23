@@ -10,3 +10,8 @@ div{
 button{
     margin-right: 0.5rem;
 }
+
+textarea{
+    width: 800px;
+    height: 400px;
+}
