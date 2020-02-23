@@ -1,8 +1,7 @@
 import { injectable, inject } from 'inversify'
 import { GapiInitService } from './gapi-init.service';
-import { Observable } from 'rxjs';
-import { IGapiOptions } from '../contracts';
-import { map } from 'rxjs/operators';
+import { Observable, of, from, bindCallback, ReplaySubject } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 
 @injectable()
 export class GapiLoginService{
@@ -10,25 +9,37 @@ export class GapiLoginService{
     constructor(@inject(GapiInitService)private initService: GapiInitService){
     }
 
-    private _loggedInObservable: Observable<boolean> | undefined;
+    private _loggedInObservable: ReplaySubject<boolean> | undefined;
 
-    public loggedInObservable(options: IGapiOptions): Observable<boolean>{
+    public login() {
+        return from(gapi.auth2.getAuthInstance()).pipe(
+            mergeMap(() => {
+                if(gapi.auth2.getAuthInstance().isSignedIn.get()){
+                    return of(gapi.auth2.getAuthInstance().currentUser.get());
+                }
+                return from(gapi.auth2.getAuthInstance().signIn())
+            })
+        )
+    }
+
+    public logout(){
+        return from(gapi.auth2.getAuthInstance().signOut());
+    }
+
+    public loggedInObservable(): Observable<boolean>{
         if(this._loggedInObservable == null){
-            this._loggedInObservable = this.createLoggedInStream(options);
+            this._loggedInObservable = this.createLoggedInStream();
         }
         return this._loggedInObservable;
     }
 
-    private createLoggedInStream(options: IGapiOptions){
-        return this.initService.initialise(options).pipe(
-            map(() => {
+    private createLoggedInStream(){
+        const subject = new ReplaySubject<boolean>(1);
+        const isSignedIn = gapi.auth2.getAuthInstance().isSignedIn;
 
-                gapi.auth2.init(options)
+        isSignedIn.listen(state => subject.next(state));
 
-                const auth = gapi.auth2.getAuthInstance();
-
-                return gapi.auth2.getAuthInstance().isSignedIn.get();
-            }),
-        );
+        subject.next(isSignedIn.get())
+        return subject;
     }
 }

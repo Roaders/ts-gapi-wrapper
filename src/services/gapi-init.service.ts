@@ -1,13 +1,13 @@
 import { injectable } from 'inversify'
 import { Observable, bindCallback, defer } from 'rxjs'
-import { map, mergeMap, shareReplay, share } from 'rxjs/operators'
+import { map, mergeMap, shareReplay, share, tap } from 'rxjs/operators'
 import { IGapiOptions } from '../contracts';
 import loader from 'little-loader';
 
 @injectable()
 export class GapiInitService{
 
-    private _initialiseStream: Observable<true> = this.createStream();
+    private _initialiseStream: Observable<true> | undefined;
     private _optionsComparison: string | undefined;
 
     public initialise(options: IGapiOptions): Observable<true>{
@@ -18,14 +18,18 @@ export class GapiInitService{
 
         this._optionsComparison = this._optionsComparison || JSON.stringify(options);
 
+        if(this._initialiseStream == null){
+            this._initialiseStream = this.createStream(options)
+        }
 
         return this._initialiseStream;
     }
 
-    private createStream(): Observable<true>{
+    private createStream(options: IGapiOptions): Observable<true>{
 
         return bindCallback(loader)('https://apis.google.com/js/api.js').pipe(
             mergeMap(() => bindCallback(gapi.load)('client:auth2')),
+            tap(() => gapi.auth2.init(options)),
             map(() => true as const),
             shareReplay(1)
         )

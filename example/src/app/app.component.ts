@@ -1,4 +1,6 @@
 import { Component, NgZone } from '@angular/core';
+import { empty } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { GapiInitService, GapiLoginService, IGapiOptions } from 'ts-gapi-wrapper';
 
 const OPTIONS_STORAGE_KEY = 'gapi.wrapper.example.options';
@@ -16,7 +18,9 @@ export class AppComponent {
     public SCOPES: string = 'https://www.googleapis.com/auth/drive.metadata.readonly';
 
     public initState = 'Not Initialised';
-    public loginState = 'Not Logged In';
+    public loginState = 'Not Subscribed';
+    public loginResult = '';
+    public logoutResult = '';
 
     constructor(private initService: GapiInitService, private loginService: GapiLoginService, private zone: NgZone) {
         const optionsString: string | null = window.localStorage.getItem(OPTIONS_STORAGE_KEY);
@@ -33,27 +37,51 @@ export class AppComponent {
     }
 
     public initialise() {
-        const options = this.options;
-
-        if (options == null) {
-            return;
-        }
-
-        this.initService.initialise(options).subscribe(
+        this.initialiseStream().subscribe(
             () => this.zone.run(() => this.initState = 'INITIALISED'),
         );
     }
 
+    public subscribeToLoggedIn() {
+        this.initialiseStream().pipe(
+            mergeMap(() => this.loginService.loggedInObservable()),
+        ).subscribe(
+            (loggedIn) => this.zone.run(() => {
+                this.loginState = loggedIn ? 'Logged In' : 'Not Logged In';
+            }),
+        );
+    }
+
     public login() {
+        this.initialiseStream().pipe(
+            mergeMap(() => this.loginService.login()),
+        ).subscribe(
+            (user) => this.zone.run(() => {
+                this.loginResult = user.getBasicProfile().getName();
+                this.logoutResult = '';
+            }),
+        );
+    }
+
+    public logout() {
+        this.initialiseStream().pipe(
+            mergeMap(() => this.loginService.logout()),
+        ).subscribe(
+            () => this.zone.run(() => {
+                this.logoutResult = 'Logged Out';
+                this.loginResult = '';
+            }),
+        );
+    }
+
+    private initialiseStream() {
         const options = this.options;
 
         if (options == null) {
-            return;
+            return empty();
         }
 
-        this.loginService.loggedInObservable(options).subscribe(
-            (loggedIn) => this.zone.run(() => this.loginState = loggedIn ? 'Not Logged In' : 'Logged In'),
-        );
+        return this.initService.initialise(options);
     }
 
     private get options(): IGapiOptions | undefined {

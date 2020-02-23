@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { GapiInitService, GapiLoginService } from 'ts-gapi-wrapper';
-import { container } from 'ts-gapi-wrapper/inversify';
+import { getProviders } from 'ts-gapi-wrapper/inversify';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -12,10 +11,7 @@ import { AppComponent } from './app.component';
     imports: [
         BrowserModule, FormsModule,
     ],
-    providers: [
-        { provide: GapiLoginService, useFactory: () => container.get(GapiLoginService) },
-        { provide: GapiInitService, useFactory: () => container.get(GapiInitService) },
-    ],
+    providers: [...getProviders()],
     bootstrap: [AppComponent],
 })
 export class AppModule { }
