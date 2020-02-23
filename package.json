@@ -26,5 +26,9 @@
         "rxjs": "^6.5.4",
         "tslint": "^6.0.0",
         "typescript": "^3.8.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Roaders/ts-gapi-wrapper"
     }
 }
