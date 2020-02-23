@@ -1,2 +1,32 @@
 
 <h1>GAPI Example</h1>
+
+<div>
+
+    <div>CLIENT_ID</div>
+    <input type="text" [(ngModel)]="CLIENT_ID">
+
+    <div>API_KEY</div>
+    <input type="text" [(ngModel)]="API_KEY">
+    
+    <div>DISCOVERY_DOCS</div>
+    <input type="text" [(ngModel)]="DISCOVERY_DOCS">
+
+    <div>SCOPES</div>
+    <input type="text" [(ngModel)]="SCOPES">
+
+</div>
+
+<div>
+
+    <button type="button" (click)="initialise()">Initialise</button>
+    <span>{{initState}}</span>
+
+</div>
+
+<div>
+
+    <button type="button" (click)="login()">Login</button>
+    <span>{{loginState}}</span>
+
+</div>
