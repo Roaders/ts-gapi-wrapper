@@ -1,9 +1,9 @@
 # ts-gapi-wrapper
 > An npm installable wrapper that loads and initialises gapi
 
-It can be a pain using the Google api (gapi) libraries when you are used to installing all your dependencies through npm and bundling them all using webpack into an Angular or React website.
+It can be a pain using the Google api (gapi) libraries when you are used to installing all your dependencies through npm and bundling them all using webpack into an Angular or React application.
 
-This package hides all the complexities of this behind a simpel api and does all of the script loading and initialisation necessary without requiring any extra script tags in your html.
+This package hides all the complexities of this behind a simple api and does all of the script loading and initialisation necessary without requiring any extra script tags in your html.
 
 This library is platform agnostic so will work with any framework such as Angular or React.
 
@@ -66,6 +66,7 @@ export class MyComponent {
 }
 ```
 **Other Google APIs**
+
 You are most likely to want to use other APIs apart from just login. To do this you will need to install the relevant types. For example:
 ```
 npm install @types/gapi.client.drive -D
@@ -107,7 +108,7 @@ export class AppModule { }
 ```
 
 ## Angular
-As the initialisation and loading of the api and the api calls are doing outside of Angular zones you must update your UI inside a zone when a result is returned:
+As the initialisation and loading of the api and the api calls are done outside of Angular zones you must update your UI inside a zone when a result is returned:
 
 ```typescript
 import { Component, NgZone } from '@angular/core';
